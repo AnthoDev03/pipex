@@ -5,6 +5,8 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c \
        srcs/utils.c \
        srcs/utils_b.c \
+       srcs/find_path.c \
+       srcs/out_in.c \
        srcs/ft_split.c
 
 OBJS = $(SRCS:.c=.o)
