@@ -1,5 +1,27 @@
 #include "../includes/pipex.h"
 
+void	free_allocated_memory(char ***arr)
+{
+	char	**temp;
+
+	temp = *arr;
+	while (*temp)
+	{
+		free(*temp);
+		temp++;
+	}
+	free(*arr);
+	*arr = NULL;
+}
+
+void	puterror(char *str)
+{
+	ft_putstr_fd("\033[0;31m", 2);
+	perror(str);
+	ft_putstr_fd("\033[0m", 2);
+	exit(-1);
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	int	fds[2];

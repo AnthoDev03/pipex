@@ -9,9 +9,9 @@
 /*   Updated: 2023/04/14 11:30:15 by anthrodr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../includes/pipex.h"
+#include "libft.h"
 
-static size_t	ft_wordcount(char *s, char c)
+static size_t	ft_wordcount(char const *s, char c)
 {
 	size_t	count;
 
@@ -30,7 +30,7 @@ static size_t	ft_wordcount(char *s, char c)
 	return (count);
 }
 
-static char	*ft_strsub(char *s, size_t start, size_t len)
+static char	*ft_strsub(char const *s, size_t start, size_t len)
 {
 	char	*substr;
 
@@ -41,7 +41,7 @@ static char	*ft_strsub(char *s, size_t start, size_t len)
 	return (substr);
 }
 
-static void	free_allocated_memory_split(char **result, size_t i)
+static void	free_allocated_memory(char **result, size_t i)
 {
 	size_t	j;
 
@@ -54,7 +54,7 @@ static void	free_allocated_memory_split(char **result, size_t i)
 	free(result);
 }
 
-static char	**split_words(char *s, char c, size_t words, char **result)
+static char	**split_words(char const *s, char c, size_t words, char **result)
 {
 	size_t	start;
 	size_t	end;
@@ -72,7 +72,7 @@ static char	**split_words(char *s, char c, size_t words, char **result)
 		result[i] = ft_strsub(s, start, end - start);
 		if (!result[i])
 		{
-			free_allocated_memory_split(result, i);
+			free_allocated_memory(result, i);
 			return (NULL);
 		}
 		start = end;
@@ -82,7 +82,7 @@ static char	**split_words(char *s, char c, size_t words, char **result)
 	return (result);
 }
 
-char	**ft_split(char *s, char c)
+char	**ft_split(char const *s, char c)
 {
 	size_t	words;
 	char	**result;
