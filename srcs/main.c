@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anthrodr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/15 15:53:05 by anthrodr          #+#    #+#             */
+/*   Updated: 2023/07/15 15:53:08 by anthrodr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/pipex.h"
 
 void	free_allocated_memory(char ***arr)
@@ -25,6 +37,8 @@ void	puterror(char *str)
 int	main(int ac, char **av, char **envp)
 {
 	int	fds[2];
+	t_exec exec1;
+	t_exec exec2;
 
 	if (ac != 5)
 	{
@@ -33,8 +47,15 @@ int	main(int ac, char **av, char **envp)
 	}
 	if (pipe(fds) == -1)
 		puterror("Pipe Error ");
-	fork_processes(fds, av[1], av[2], av[3], av[4], envp);
+	exec1.cmd = av[2];
+	exec1.file = av[1];
+	exec1.redirect = 1;
+	exec1.envp = envp;
+	exec2.cmd = av[3];
+	exec2.file = av[4];
+	exec2.redirect = 2;
+	exec2.envp = envp;
+	fork_processes(fds, &exec1, &exec2);
 	return (0);
 }
-
 

@@ -1,23 +1,16 @@
-#include "../includes/pipex.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   out_in.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anthrodr <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/07/15 15:53:19 by anthrodr          #+#    #+#             */
+/*   Updated: 2023/07/15 15:53:21 by anthrodr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-void	handle_redirect(int *fd, char *file, int flag)
-{
-	if (flag == 1) // Redirect input
-	{
-		*fd = open(file, O_RDONLY);
-		if (*fd < 0)
-			puterror("Error: Can't open infile");
-		dup2(*fd, STDIN_FILENO);
-	}
-	else // Redirect output
-	{
-		*fd = open(file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (*fd < 0)
-			puterror("Error: Can't open outfile");
-		dup2(*fd, STDOUT_FILENO);
-	}
-	close(*fd);
-}
+#include "../includes/pipex.h"
 
 void	handle_pipe(int *fds, int redirect)
 {
@@ -46,16 +39,35 @@ void	execute_cmd(char *cmd, char **envp)
 	exit(0);
 }
 
-void	child_process(int *fds, char *cmd, char *file, int redirect, char **envp)
+void	handle_redirect(int *fd, t_exec *exec)
+{
+	if (exec->redirect == 1) 
+	{
+		*fd = open(exec->file, O_RDONLY);
+		if (*fd < 0)
+			puterror("Error: Can't open infile");
+		dup2(*fd, STDIN_FILENO);
+	}
+	else 
+	{
+		*fd = open(exec->file, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+		if (*fd < 0)
+			puterror("Error: Can't open outfile");
+		dup2(*fd, STDOUT_FILENO);
+	}
+	close(*fd);
+}
+
+void	child_process(int *fds, t_exec *exec)
 {
 	int		fd;
 
-	handle_redirect(&fd, file, redirect);
-	handle_pipe(fds, redirect);
-	execute_cmd(cmd, envp);
+	handle_redirect(&fd, exec);
+	handle_pipe(fds, exec->redirect);
+	execute_cmd(exec->cmd, exec->envp);
 }
 
-void	fork_and_execute(int *fds, char *cmd, char *file, int redirect, char **envp)
+void	fork_and_execute(int *fds, t_exec *exec)
 {
 	int pid;
 
@@ -63,13 +75,13 @@ void	fork_and_execute(int *fds, char *cmd, char *file, int redirect, char **envp
 	if (pid == -1)
 		puterror("Fork Error ");
 	if (pid == 0)
-		child_process(fds, cmd, file, redirect, envp);
+		child_process(fds, exec);
 }
 
-void	fork_processes(int *fds, char *infile, char *cmd1, char *cmd2, char *outfile, char **envp)
+void	fork_processes(int *fds, t_exec *exec1, t_exec *exec2)
 {
-	fork_and_execute(fds, cmd1, infile, 1, envp);
-	fork_and_execute(fds, cmd2, outfile, 2, envp);
+	fork_and_execute(fds, exec1);
+	fork_and_execute(fds, exec2);
 
 	close(fds[0]);
 	close(fds[1]);
