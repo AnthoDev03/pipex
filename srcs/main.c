@@ -12,6 +12,16 @@
 
 #include "../includes/pipex.h"
 
+void	handle_pipe(int *fds, int redirect)
+{
+	if (redirect != 1)
+		dup2(fds[0], STDIN_FILENO);
+	if (redirect != 2)
+		dup2(fds[1], STDOUT_FILENO);
+	close(fds[0]);
+	close(fds[1]);
+}
+
 void	free_allocated_memory(char ***arr)
 {
 	char	**temp;
@@ -36,9 +46,9 @@ void	puterror(char *str)
 
 int	main(int ac, char **av, char **envp)
 {
-	int	fds[2];
-	t_exec exec1;
-	t_exec exec2;
+	int		fds[2];
+	t_exec	exec1;
+	t_exec	exec2;
 
 	if (ac != 5)
 	{
@@ -58,4 +68,3 @@ int	main(int ac, char **av, char **envp)
 	fork_processes(fds, &exec1, &exec2);
 	return (0);
 }
-
