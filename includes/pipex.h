@@ -15,7 +15,7 @@
 void	puterror(char *str);
 void	free_allocated_memory(char ***arr);
 char	*find_path(char **envp, char *cmd);
-void	out_process(int fds[2], char *outfile, char *cmd, char **envp);
-void	in_process(int fds[2], char *infile, char *cmd, char **envp);
+void	child_process(int *fds, char *cmd, char *file, int redirect, char **envp);
+void	fork_processes(int *fds, char *infile, char *cmd1, char *cmd2, char *outfile, char **envp);
 
 #endif

@@ -33,10 +33,8 @@ int	main(int ac, char **av, char **envp)
 	}
 	if (pipe(fds) == -1)
 		puterror("Pipe Error ");
-	in_process(fds, av[1], av[2], envp);
-	wait(NULL);
-	out_process(fds, av[4], av[3], envp);
-	close(fds[0]);
-	close(fds[1]);
+	fork_processes(fds, av[1], av[2], av[3], av[4], envp);
 	return (0);
 }
+
+
